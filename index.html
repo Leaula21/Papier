@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rock Paper Scissors</title>
+    <style>
+        .selection {
+            font-size: 2em;
+            cursor: pointer;
+        }
+
+        .result-selection {
+            font-size: 2em;
+            margin: 5px;
+        }
+
+        .winner {
+            color: green;
+        }
+    </style>
+</head>
+<body>
+    <div class="selections">
+        <button class="selection" data-selection="pierre">👊</button>  
+        <button class="selection" data-selection="feuille">✋</button>    
+        <button class="selection" data-selection="ciseaux">✌️</button>
+    </div>
+
+    <div>You: <span class="result-score">0</span></div>
+
+    <div class="final-column">Computer: <span class="result-ordi-score">0</span></div>
+
+    <script>
+        const selectionButtons = document.querySelectorAll(".selection");
+        const computerScoreSpan = document.querySelector(".result-ordi-score");
+        const yourScoreSpan = document.querySelector(".result-score");
+        const finalColumn = document.querySelector(".final-column"); // Define finalColumn
+
+        const selections = [
+            { name: "pierre", emoji: "👊", beats: "ciseaux" },
+            { name: "feuille", emoji: "✋", beats: "pierre" },
+            { name: "ciseaux", emoji: "✌️", beats: "feuille" },
+        ];
+
+        selectionButtons.forEach((selectionButton) => {
+            selectionButton.addEventListener("click", (e) => {
+                const selectionName = selectionButton.dataset.selection;
+                const selection = selections.find(
+                    (selection) => selection.name === selectionName
+                );
+                mySelect(selection);
+            });
+        });
+
+        function addSelectionResult(selection, winner) {
+            const div = document.createElement("div");
+            div.innerText = selection.emoji;
+            div.classList.add("result-selection");
+            if (winner) div.classList.add("winner");
+            finalColumn.appendChild(div); // Use appendChild instead of after
+        }
+
+        function mySelect(selection) {
+            const ordiSelect = compSelect();
+            const yourWinner = isWinner(selection, ordiSelect);
+            const computerWinner = isWinner(ordiSelect, selection);
+
+            addSelectionResult(ordiSelect, computerWinner);
+            addSelectionResult(selection, yourWinner);
+
+            if (yourWinner) incrementScore(yourScoreSpan);
+            if (computerWinner) incrementScore(computerScoreSpan);
+        }
+
+        function incrementScore(ScoreSpan) {
+            ScoreSpan.innerText = parseInt(ScoreSpan.innerText) + 1;
+        }
+
+        function isWinner(selection, opponentSelection) {
+            return selection.beats === opponentSelection.name;
+        }
+
+        function compSelect() {
+            const randomS = Math.floor(Math.random() * selections.length);
+            return selections[randomS];
+        }
+    </script>
+</body>
+</html>
